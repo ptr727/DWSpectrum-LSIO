@@ -7,14 +7,14 @@ services:
     hostname: dwspectrum-lsio-test-host
     domainname: foo.bar
     environment:
-      - PUID=1000
-      - PGID=1000
+#      - PUID=1000
+#      - PGID=1000
       - TZ=Americas/Los_Angeles
     build: .
     volumes:
-      - ./.mount/media:/config/DW Spectrum Media
-      - ./.mount/config/:/opt/digitalwatchdog/mediaserver/var
-    restart: unless-stopped
+      - ./.mount/media:/archive
+      - ./.mount/config/:/config
+    #restart: unless-stopped
     network_mode: host
     ports:
       - 7001:7001

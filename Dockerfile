@@ -20,8 +20,9 @@ ENV downloadurl="https://digital-watchdog.com/forcedown?file_path=_gendownloads/
 # DEB file modification logic based on https://github.com/thehomerepot/nxwitness/blob/master/Dockerfile
 
 RUN apt-get update \
-# Install wget so we can download the installer    
-    && apt-get install -y wget \
+# Install wget so we can download the installer
+# Install gdb, it is used at runtime, but is not referenced in any dependencies
+    && apt-get install -y wget gdb \
 # Download the DEB installer file    
     && wget -nv -O ./vms_server.deb ${downloadurl} \
 # Extract the DEB file so we can modify it before installing

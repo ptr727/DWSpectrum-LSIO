@@ -23,15 +23,15 @@ Code at [GitHub](https://github.com/ptr727/DWSpectrum)
 
 ```shell
 docker run -d \
---name=dwspectrum-lsio \
---restart=unless-stopped \
---net=host \
--e PUID=1000 \
--e PGID=1000 \
--e TZ=Americas/Los_Angeles \
--v /appdata/dwspectrum:/config/DW Spectrum Media \
--v /media/archive:/archive \
-ptr727/dwspectrum
+  --name=dwspectrum-lsio-test-container \
+  --restart=unless-stopped \
+  --network=host \
+  -e PUID=1000 \
+  -e PGID=1000 \
+  -e TZ=Americas/Los_Angeles \
+  -v "/.mount/media:/config/DW Spectrum Media" \
+  -v /.mount/config:/opt/digitalwatchdog/mediaserver/var \
+  ptr727/dwspectrum-lsio
 ```
 
 ### Docker Compose Example

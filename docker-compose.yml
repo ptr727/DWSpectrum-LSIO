@@ -1,0 +1,20 @@
+version: "3.7"
+
+services:
+  dwspectrum:
+    image: dwspectrum-lsio
+    container_name: dwspectrum-lsio-test-container
+    hostname: dwspectrum-lsio-test-host
+    domainname: foo.bar
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Americas/Los_Angeles
+    build: .
+    volumes:
+      - ./.mount/media:/config/DW Spectrum Media
+      - ./.mount/config/:/opt/digitalwatchdog/mediaserver/var
+    restart: unless-stopped
+    network_mode: host
+    ports:
+      - 7001:7001

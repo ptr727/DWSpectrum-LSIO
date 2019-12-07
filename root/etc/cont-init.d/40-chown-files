@@ -3,6 +3,6 @@
 # permissions
 chown -R ${COMPANY_NAME}:${COMPANY_NAME} \
         /app \
-        /archive \
+        /media \
         /config \
         /opt

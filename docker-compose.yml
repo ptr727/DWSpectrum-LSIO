@@ -12,7 +12,7 @@ services:
       - TZ=Americas/Los_Angeles
     build: .
     volumes:
-      - ./.mount/media:/archive
+      - ./.mount/media:/media
       - ./.mount/config/:/config
     #restart: unless-stopped
     network_mode: host

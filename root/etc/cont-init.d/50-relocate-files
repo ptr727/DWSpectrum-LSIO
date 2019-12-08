@@ -2,10 +2,10 @@
 
 #If our target directory does not exist
 #Move our source directory into place
-if [[ ! -d /config/var ]]
-then
-  #mv /opt/${COMPANY_NAME}/mediaserver/var /config/var
-fi
+#if [[ ! -d /config/var ]]
+#then
+#  mv /opt/${COMPANY_NAME}/mediaserver/var /config/var
+#fi
 
 #if our source path is NOT a symbolic link
 #delete it, and link it
@@ -17,10 +17,10 @@ fi
 
 #If our target directory does not exist
 #Move our source directory into place
-if [[ ! -d /config/etc ]]
-then
-  #mv /opt/${COMPANY_NAME}/mediaserver/etc /config/etc
-fi
+#if [[ ! -d /config/etc ]]
+#then
+#  mv /opt/${COMPANY_NAME}/mediaserver/etc /config/etc
+#fi
 
 #if our source path is NOT a symbolic link
 #delete it, and link it

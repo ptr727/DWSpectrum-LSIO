@@ -4,7 +4,7 @@
 #Move our source directory into place
 if [[ ! -d /config/var ]]
 then
-  mv /opt/${COMPANY_NAME}/mediaserver/var /config/var
+  #mv /opt/${COMPANY_NAME}/mediaserver/var /config/var
 fi
 
 #if our source path is NOT a symbolic link
@@ -19,7 +19,7 @@ fi
 #Move our source directory into place
 if [[ ! -d /config/etc ]]
 then
-  mv /opt/${COMPANY_NAME}/mediaserver/etc /config/etc
+  #mv /opt/${COMPANY_NAME}/mediaserver/etc /config/etc
 fi
 
 #if our source path is NOT a symbolic link

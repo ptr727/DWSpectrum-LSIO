@@ -6,6 +6,7 @@ if [[ ! -d /config/var ]]
 then
 #  mv /opt/${COMPANY_NAME}/mediaserver/var /config/var
   mkdir /config/var
+  chown -R ${COMPANY_NAME}:${COMPANY_NAME} /config/var
 fi
 
 #if our source path is NOT a symbolic link
@@ -22,6 +23,7 @@ if [[ ! -d /config/etc ]]
 then
 #  mv /opt/${COMPANY_NAME}/mediaserver/etc /config/etc
   mkdir /config/etc
+  chown -R ${COMPANY_NAME}:${COMPANY_NAME} /config/etc
 fi
 
 #if our source path is NOT a symbolic link

@@ -88,4 +88,4 @@ COPY root/etc /etc
 EXPOSE 7001
 
 # Create data volumes
-VOLUME /media /config
+VOLUME /config /media /archive

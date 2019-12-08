@@ -13,7 +13,7 @@ services:
     build: .
     volumes:
       - ./.mount/media:/media
-      - ./.mount/config/:/config
+      - ./.mount/config:/config
     #restart: unless-stopped
     network_mode: host
     ports:

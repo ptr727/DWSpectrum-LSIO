@@ -68,10 +68,11 @@ services:
 
 ## TODO
 
+- The container does run in Unraid, but no storage volumes are available in the VMS. This appears to be an issue with supported filesystem types, and needs to be [resolved](https://support.networkoptix.com/hc/en-us/requests/19037) by NetworkOptix.
 - [Convince](https://support.networkoptix.com/hc/en-us/articles/360037973573-How-to-run-Nx-Server-in-Docker) NxWitness to:
   - Publish always up to date docker images to Docker Hub.
-  - Support running as non-root, allowing us to specify the user account to run under using `user: UID:GID`, such that file permissions match the mapped data volume permissions.
   - Use the cloud account for license enforcement, not the hardware that dynamically changes in Docker environments.
+  - Convert their Docker deployment to not use systemd, alleviating the need for "hacking" the install.
 - Figure out how to automatically detect when new [NxWitness](https://nxvms.com/download/linux) or [DWSpectrum](https://dwspectrum.digital-watchdog.com/download/linux) releases are published, and update the container. Possibly parsing the readme file for version information, and using a webhook to kick the build.
 - Figure out how to use `--no-install-recommends` to make the image smaller. Currently we get a `OCI runtime create failed` error if it is used, probably missing some required but unspecified dependencies.
-- Resolve runtime failure `start-stop-daemon: unable to start /opt/digitalwatchdog/mediaserver/bin/mediaserver-bin (Invalid argument)`. It also happens with the NxWitness container.
+- Resolve runtime failure `start-stop-daemon: unable to start /opt/digitalwatchdog/mediaserver/bin/mediaserver-bin (Invalid argument)`. It also happens with the base NxWitness container, but does not happen in all environments.

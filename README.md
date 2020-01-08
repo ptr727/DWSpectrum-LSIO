@@ -1,6 +1,6 @@
 # DW Spectrum IPVMS Docker
 
-[DW Spectrum IPVMS](https://digital-watchdog.com/productdetail/DW-Spectrum-IPVMS/) is the US version of [Network Optix Nx Witness VMS](https://www.networkoptix.com/nx-witness/).  
+[DW Spectrum IPVMS](https://digital-watchdog.com/productdetail/DW-Spectrum-IPVMS/) is the US branded version of [Network Optix Nx Witness VMS](https://www.networkoptix.com/nx-witness/).  
 The docker configuration is based on the [NetworkOptix Docker](https://bitbucket.org/networkoptix/nx_open_integrations/src/default/docker/) project.  
 The base image is [LinuxServer Ubuntu](https://hub.docker.com/r/lsiobase/ubuntu), where we can specify the UID, GID, and TZ, allowing is to run as non-root, and using the correct user rights for mapped data volumes.  
 The systemd removal modifications, and adoption for LSIO, is based on [The Home Repot NxWitness Docker](https://github.com/thehomerepot/nxwitness) project.  
@@ -60,11 +60,9 @@ services:
 ## Notes
 
 - The camera licenses are tied to hardware information, and this does not work well in container environments where the hardware may change.  
-- Use a UID and GUID that has rights on the the mapped data volumes, see the [LSIO docs](https://docs.linuxserver.io/general/understanding-puid-and-pgid) for more details.  
-- Using the lsiobase/ubuntu:xenial base image results in an [systemd-detect-virt error](https://github.com/systemd/systemd/issues/8111), the ubuntu:xenial base does not have the same problem, so we use lsiobase/ubuntu:bionic builds, which works fine.
-- By using the LSIO images we can specify PUID, GUID, and TZ environment variables, ideal when using UnRaid.
-- The NxWitness docker setup uses systemd, which as far as I researched (and I am not an expert in this field), is not recommended in docker. It is [possible](https://developers.redhat.com/blog/2019/04/24/how-to-run-systemd-in-a-container/) to run systemd in docker, but it does not work in LSIO (and again I'm no LSIO expert either).
 - The modifications to remove systemd and make LSIO work is documented in the Dockerfile, and are based on [The Home Repot NxWitness](https://github.com/thehomerepot/nxwitness) modifications.
+- Use a UID and GUID that has rights on the the mapped data volumes, see the [LSIO docs](https://docs.linuxserver.io/general/understanding-puid-and-pgid) for more details.  
+- By using the LSIO images we can specify PUID, GUID, and TZ environment variables, ideal when using UnRaid.
 
 ## TODO
 
@@ -76,3 +74,4 @@ services:
 - Figure out how to automatically detect when new [NxWitness](https://nxvms.com/download/linux) or [DWSpectrum](https://dwspectrum.digital-watchdog.com/download/linux) releases are published, and update the container. Possibly parsing the readme file for version information, and using a webhook to kick the build.
 - Figure out how to use `--no-install-recommends` to make the image smaller. Currently we get a `OCI runtime create failed` error if it is used, probably missing some required but unspecified dependencies.
 - Resolve runtime failure `start-stop-daemon: unable to start /opt/digitalwatchdog/mediaserver/bin/mediaserver-bin (Invalid argument)`. It also happens with the base NxWitness container, but does not happen in all environments.
+- Using the lsiobase/ubuntu:xenial base image results in an [systemd-detect-virt error](https://github.com/systemd/systemd/issues/8111), the ubuntu:xenial base does not have the same problem, so we use lsiobase/ubuntu:bionic builds.

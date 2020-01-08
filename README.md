@@ -12,7 +12,7 @@ An [alternate version](https://github.com/ptr727/DWSpectrum) is based on an Ubun
 
 ## Build Status
 
-![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/ptr727/dwspectrum-lsio)  
+![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/ptr727/dwspectrum-lsio?logo=docker)  
 Pull from [Docker Hub](https://hub.docker.com/r/ptr727/dwspectrum-lsio)  
 Code at [GitHub](https://github.com/ptr727/DWSpectrum)
 

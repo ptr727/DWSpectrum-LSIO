@@ -1,8 +1,10 @@
 #!/usr/bin/with-contenv bash
 
-# permissions
+# Skip for testing
+# Remove before promoting to master
+exit 1
+
+# Set ownership permissions
 chown -R ${COMPANY_NAME}:${COMPANY_NAME} \
-        /app \
         /media \
-        /config \
-        /opt
+        /config

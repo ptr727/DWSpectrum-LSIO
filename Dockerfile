@@ -1,5 +1,3 @@
-# DEB file modification logic is based on: https://github.com/thehomerepot/nxwitness/blob/master/Dockerfile
-
 # Use LSIO Ubuntu Bionic version
 FROM lsiobase/ubuntu:bionic
 
@@ -25,17 +23,20 @@ RUN apt-get update \
     && apt-get install --yes \
 # Install wget so we can download the installer
         wget \
+# Install nano and mc for making navigating the container easier
+        nano mc \
 # Install gdb for crash handling (it is used but not included in the deb dependencies)
-        gdb \
+        gdb gdbserver \
 # Install binutils for patching cloud host (from nxwitness docker)
         binutils \
 # Install lsb-release used as a part of install scripts inside the deb package (from nxwitness docker)
         lsb-release \
-# Install nano and mc for making navigating the container easier
-        nano mc \
 # Download the DEB installer file
     && wget -nv -O ./vms_server.deb ${DOWNLOAD_URL} \
-# Replace the LSIO abc usernames with the server app names
+#
+# DEB and LSIO modification logic is based on https://github.com/thehomerepot/nxwitness/blob/master/Dockerfile
+# Replace the LSIO abc usernames with the mediaserver names
+# https://github.com/linuxserver/docker-baseimage-alpine/blob/master/root/etc/cont-init.d/10-adduser
     && usermod -l ${COMPANY_NAME} abc \
     && groupmod -n ${COMPANY_NAME} abc \
     && sed -i "s/abc/\${COMPANY_NAME}/g" /etc/cont-init.d/10-adduser \
@@ -69,6 +70,7 @@ RUN apt-get update \
     && sed -i '/^    su/d; /--chuid/d' ./vms_server/opt/${COMPANY_NAME}/mediaserver/bin/mediaserver \
 # Remove all the etc/init and etc/systemd folders
     && rm -rf ./vms_server/etc \
+#
 # Rebuild the DEB file from the modified directory
     && dpkg-deb -b ./vms_server ./vms_server_mod.deb \
 # Install from the modified DEB file
@@ -82,10 +84,19 @@ RUN apt-get update \
 
 # Copy etc init and services files
 # The scripts are using the ${COMPANY_NAME} global environment variable
+# https://github.com/just-containers/s6-overlay#container-environment
 COPY root/etc /etc
 
 # Expose port 7001
 EXPOSE 7001
 
-# Create data volumes
-VOLUME /config /media /archive
+# Create mount points
+# Links will be created at runtime in the etc/cont-init.d/50-relocate-files script
+# /opt/digitalwatchdog/mediaserver/etc -> /config/etc
+# /opt/digitalwatchdog/mediaserver/var -> /config/var
+# /opt/digitalwatchdog/mediaserver/var/data -> /media
+#VOLUME /config /media
+
+# Nx Bug: Volumes do not show up in storage
+# Remove before promoting to master
+VOLUME /one /two /three

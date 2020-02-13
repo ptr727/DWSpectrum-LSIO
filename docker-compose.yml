@@ -12,9 +12,16 @@ services:
       - TZ=Americas/Los_Angeles
     build: .
     volumes:
-      - ./.mount/media:/media
-      - ./.mount/config:/config
+      #- ./.mount/config:/config
+      #- ./.mount/media:/media
+      # Nx Bug: the mapped volumes do not show up in storage
+      # Remove before promoting to master
+      - ./.mount/media:/opt/digitalwatchdog/mediaserver/var/data
+      - ./.mount/one:/one
+      - ./.mount/two:/two
+      - ./.mount/three:/three
     #restart: unless-stopped
-    network_mode: host
+    network_mode: bridge
+    #mac_address: b7-48-d5-a6-d1-99
     ports:
       - 7001:7001

@@ -92,9 +92,8 @@ services:
   - Publish always up to date ready to use docker images to Docker Hub.
   - Use the cloud account for license enforcement, not the hardware that dynamically changes in docker environments.
   - Create `init` based images instead of less portable `systemd` based images.
-  - Allow using any path or volume for storage instead of incorrectly filtering our locations.
+  - Allow using any path or volume to be used for storage instead of incorrectly filtering our locations.
 
 ## TODO
 
 - Automatically detect new [NxWitness](https://nxvms.com/download/linux) or [DWSpectrum](https://dwspectrum.digital-watchdog.com/download/linux) releases and update the container. Possibly parsing the readme file for version information, and using a webhook to kick the build.
-- Using the lsiobase/ubuntu:xenial base image results in an [systemd-detect-virt error](https://github.com/systemd/systemd/issues/8111), the ubuntu:xenial base does not have the same problem, so we use lsiobase/ubuntu:bionic builds.

@@ -95,8 +95,4 @@ EXPOSE 7001
 # /opt/digitalwatchdog/mediaserver/etc -> /config/etc
 # /opt/digitalwatchdog/mediaserver/var -> /config/var
 # /opt/digitalwatchdog/mediaserver/var/data -> /media
-#VOLUME /config /media
-
-# Nx Bug: Volumes do not show up in storage
-# Remove before promoting to master
-VOLUME /one /two /three
+VOLUME /config /media

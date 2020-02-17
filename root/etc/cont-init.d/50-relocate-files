@@ -1,9 +1,5 @@
 #!/usr/bin/with-contenv bash
 
-# Skip for testing
-# Remove before promoting to master
-exit 1
-
 # Make sure that /config/var and /config/etc exists
 if [[ ! -d /config/var ]]
 then

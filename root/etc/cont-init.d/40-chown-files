@@ -1,8 +1,6 @@
 #!/usr/bin/with-contenv bash
 
-# permissions
+# Set ownership permissions
 chown -R ${COMPANY_NAME}:${COMPANY_NAME} \
-        /app \
         /media \
-        /config \
-        /opt
+        /config

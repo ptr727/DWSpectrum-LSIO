@@ -1,35 +1,45 @@
 #!/usr/bin/with-contenv bash
 
-#If our target directory does not exist
-#Move our source directory into place
+# Make sure that /config/var and /config/etc exists
 if [[ ! -d /config/var ]]
 then
-#  mv /opt/${COMPANY_NAME}/mediaserver/var /config/var
-  mkdir /config/var
+  echo "/config/var does not exist, creating"
+  mkdir -p /config/var && \
   chown -R ${COMPANY_NAME}:${COMPANY_NAME} /config/var
 fi
-
-#if our source path is NOT a symbolic link
-#delete it, and link it
-if [[ ! -h /opt/${COMPANY_NAME}/mediaserver/var ]]
-then
-  rm -rf /opt/${COMPANY_NAME}/mediaserver/var
-  ln -s /config/var /opt/${COMPANY_NAME}/mediaserver/var
-fi
-
-#If our target directory does not exist
-#Move our source directory into place
 if [[ ! -d /config/etc ]]
 then
-#  mv /opt/${COMPANY_NAME}/mediaserver/etc /config/etc
-  mkdir /config/etc
+  echo "/config/etc does not exist, creating"
+  mkdir -p /config/etc && \
   chown -R ${COMPANY_NAME}:${COMPANY_NAME} /config/etc
 fi
 
-#if our source path is NOT a symbolic link
-#delete it, and link it
+# Make sure that the ../mediaserver/var and ../mediaserver/etc links to /config/var and /config/etc
+if [[ ! -h /opt/${COMPANY_NAME}/mediaserver/var ]]
+then
+  echo "../mediaserver/var is not a link, linking"
+  rm -rf /opt/${COMPANY_NAME}/mediaserver/var && \
+  ln -s /config/var /opt/${COMPANY_NAME}/mediaserver/var
+fi
 if [[ ! -h /opt/${COMPANY_NAME}/mediaserver/etc ]]
 then
-  rm -rf /opt/${COMPANY_NAME}/mediaserver/etc
+  echo "../mediaserver/etc is not a link, linking"
+  rm -rf /opt/${COMPANY_NAME}/mediaserver/etc && \
   ln -s /config/etc /opt/${COMPANY_NAME}/mediaserver/etc
+fi
+
+# Make sure that /media exists
+if [[ ! -d /media ]]
+then
+  echo "/media does not exist, creating"
+  mkdir -p /media && \
+  chown -R ${COMPANY_NAME}:${COMPANY_NAME} /media
+fi
+
+# Make sure that ../mediaserver/var/data links to /media
+if [[ ! -h /opt/${COMPANY_NAME}/mediaserver/var/data ]]
+then
+  echo "../mediaserver/var/data is not a link, linking"
+  rm -rf /opt/${COMPANY_NAME}/mediaserver/var/data && \
+  ln -s /media /opt/${COMPANY_NAME}/mediaserver/var/data
 fi

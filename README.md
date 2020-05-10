@@ -7,9 +7,9 @@ This project is based on the NetworkOptix [docker project](https://bitbucket.org
 There are a few key problems with the NetworkOptix docker project:
 
 - The container uses `systemd` and runs as `root` and does not work in some docker environments like [Unraid](https://unraid.net).
-- The docker build script is external to the dockerfile and does not work in automated build enviorments like [Docker Hub](https://docs.docker.com/docker-hub/builds/).
+- The docker build script is external to the dockerfile and does not work in automated build environments like [Docker Hub](https://docs.docker.com/docker-hub/builds/).
 
-This project modifes the NetworkOptix version to run as `init`, to build from within the `Dockerfile`, and to automatically post builds on Docker Hub.  
+This project modifies the NetworkOptix version to run as `init`, to build from within the `Dockerfile`, and to automatically post builds on Docker Hub.  
 Modifications to replace `systemd` with `init`, and to use [LinuxServer](https://www.linuxserver.io) and [s6-overlay](https://github.com/just-containers/s6-overlay), are based on [The Home Repot NxWitness](https://github.com/thehomerepot/nxwitness) project.  
 
 An [alternate version](https://github.com/ptr727/DWSpectrum) is based on the original NetworkOptix `systemd` docker configuration using an Ubuntu base image.
@@ -28,7 +28,7 @@ Code at [GitHub](https://github.com/ptr727/DWSpectrum)
 
 ### Docker Run Example
 
-```shell
+```console
 docker run -d \
   --name=dwspectrum-lsio-test-container \
   --restart=unless-stopped \

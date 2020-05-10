@@ -4,12 +4,14 @@ FROM lsiobase/ubuntu:bionic
 # Latest VMS versions are listed here:
 # https://dwspectrum.digital-watchdog.com/download/linux
 # https://nxvms.com/download/linux
-ARG DOWNLOAD_URL="http://updates.networkoptix.com/digitalwatchdog/29990/linux/dwspectrum-server-4.0.0.29990-linux64.deb"
-ARG DOWNLOAD_VERSION="4.0.0.29990"
+# http://beta.networkoptix.com/beta-builds/default/
+# http://updates.networkoptix.com/default/30798/linux/nxwitness-server-4.1.0.30798-linux64-beta-prod.deb
+ARG DOWNLOAD_URL="https://updates.networkoptix.com/digitalwatchdog/30917/linux/dwspectrum-server-4.0.0.30917-linux64.deb"
+ARG DOWNLOAD_VERSION="4.0.0.30917"
 
 # Prevent EULA and confirmation prompts in installers
 ENV DEBIAN_FRONTEND=noninteractive \
-# NxWitness or DWSpectrum
+# NxWitness (networkoptix) or DWSpectrum (digitalwatchdog)
     COMPANY_NAME="digitalwatchdog"
 
 LABEL name="DWSpectrum-LSIO" \

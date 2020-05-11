@@ -43,3 +43,5 @@ then
   rm -rf /opt/${COMPANY_NAME}/mediaserver/var/data && \
   ln -s /media /opt/${COMPANY_NAME}/mediaserver/var/data
 fi
+
+# Nothing to do for /archive

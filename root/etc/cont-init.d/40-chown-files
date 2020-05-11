@@ -3,4 +3,5 @@
 # Set ownership permissions
 chown -R ${COMPANY_NAME}:${COMPANY_NAME} \
         /media \
-        /config
+        /config \
+        /archive

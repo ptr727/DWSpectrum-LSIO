@@ -1,11 +1,13 @@
 # Use LSIO Ubuntu Bionic version
 FROM lsiobase/ubuntu:bionic
 
-# Latest VMS versions are listed here:
+# Released versions are listed here:
 # https://dwspectrum.digital-watchdog.com/download/linux
 # https://nxvms.com/download/linux
+# Latest and beta versions are listed here, substitute the nxwitness strings for dwspectrum:
 # http://beta.networkoptix.com/beta-builds/default/
-# http://updates.networkoptix.com/default/30798/linux/nxwitness-server-4.1.0.30798-linux64-beta-prod.deb
+# https://updates.networkoptix.com/digitalwatchdog/30917/linux/dwspectrum-server-4.0.0.30917-linux64.deb
+# http://updates.networkoptix.com/digitalwatchdog/30917/windows/dwspectrum-client-4.0.0.30917-win64.exe
 ARG DOWNLOAD_URL="https://updates.networkoptix.com/digitalwatchdog/30917/linux/dwspectrum-server-4.0.0.30917-linux64.deb"
 ARG DOWNLOAD_VERSION="4.0.0.30917"
 
@@ -97,4 +99,7 @@ EXPOSE 7001
 # /opt/digitalwatchdog/mediaserver/etc -> /config/etc
 # /opt/digitalwatchdog/mediaserver/var -> /config/var
 # /opt/digitalwatchdog/mediaserver/var/data -> /media
-VOLUME /config /media
+# /config is for configuration
+# /media is for media recording
+# /archive is for media backups
+VOLUME /config /media /archive

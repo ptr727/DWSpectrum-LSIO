@@ -14,6 +14,7 @@ services:
     volumes:
       - ./.mount/config:/config
       - ./.mount/media:/media
+      - ./.mount/archive:/archive
     #restart: unless-stopped
     network_mode: bridge
     #mac_address: b7-48-d5-a6-d1-99

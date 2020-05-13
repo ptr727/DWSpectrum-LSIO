@@ -1,7 +1,6 @@
 #!/usr/bin/with-contenv bash
 
 # Set ownership permissions
+# Do not modify media or archive ownership
 chown -R ${COMPANY_NAME}:${COMPANY_NAME} \
-        /media \
-        /config \
-        /archive
+        /config

@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<Container version="2">
+  <Beta>True</Beta>
+  <Name>DW Spectrum IPVMS</Name>
+  <Overview>DW Spectrum IPVMS Docker based on LinuxServer</Overview>
+  <Description>DW Spectrum IPVMS Docker based on LinuxServer</Description>
+  <Category>HomeAutomation: Security: Status:Beta</Category>
+  <License>MIT</License>
+  <Repository>ptr727/dwspectrum-lsio</Repository>
+  <Registry>https://hub.docker.com/r/ptr727/dwspectrum-lsio/</Registry>
+  <GitHub>https://github.com/ptr727/DWSpectrum-LSIO</GitHub>
+  <Support>https://github.com/ptr727/DWSpectrum-LSIO</Support>
+  <Project>https://github.com/ptr727/DWSpectrum-LSIO</Project>
+  <Network>br1</Network>
+  <Privileged>false</Privileged>
+  <WebUI>http://[IP]:[PORT:7001]</WebUI>
+  <TemplateURL/>
+  <Icon>https://github.com/ptr727/DWSpectrum-LSIO/raw/master/Unraid/DWLogo.png</Icon>
+  <Networking>
+    <Mode>bridge</Mode>
+    <Publish/>
+  </Networking>
+  <Data>
+    <Volume>
+      <HostDir>/mnt/user/appdata/</HostDir>
+      <ContainerDir>/config</ContainerDir>
+      <Mode>rw</Mode>
+    </Volume>
+    <Volume>
+      <HostDir>/mnt/disks/</HostDir>
+      <ContainerDir>/media</ContainerDir>
+      <Mode>rw,slave</Mode>
+    </Volume>
+    <Volume>
+      <HostDir>/mnt/disks/</HostDir>
+      <ContainerDir>/archive</ContainerDir>
+      <Mode>rw,slave</Mode>
+    </Volume>
+  </Data>
+  <Environment>
+    <Variable>
+      <Value>99</Value>
+      <Name>PUID</Name>
+      <Mode/>
+    </Variable>
+    <Variable>
+      <Value>100</Value>
+      <Name>PGID</Name>
+      <Mode/>
+    </Variable>
+  </Environment>
+  <Labels/>
+  <Config Name="User Id" Target="PUID" Default="" Mode="" Description="Container Variable: PUID" Type="Variable" Display="always" Required="false" Mask="false">99</Config>
+  <Config Name="Group Id" Target="PGID" Default="" Mode="" Description="Container Variable: PGID" Type="Variable" Display="always" Required="false" Mask="false">100</Config>
+  <Config Name="Configuration Path" Target="/config" Default="" Mode="rw" Description="Container Path: /config" Type="Path" Display="always" Required="false" Mask="false">/mnt/user/appdata/</Config>
+  <Config Name="Media Recording Path" Target="/media" Default="" Mode="rw,slave" Description="Container Path: /media" Type="Path" Display="always" Required="false" Mask="false">/mnt/disks/</Config>
+  <Config Name="Media Backup Archive Path" Target="/archive" Default="" Mode="rw" Description="Container Path: /archive" Type="Path" Display="always" Required="false" Mask="false">/mnt/disks/</Config>
+</Container>

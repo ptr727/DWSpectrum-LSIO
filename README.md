@@ -68,6 +68,19 @@ services:
       - 7001:7001
 ```
 
+### Unraid Docker Template
+
+Manual steps:
+
+- Search for "DWSpectrum LSIO" in Community Applications, click "Get More Results From DockerHub", click the install button.
+- Add the required environment variables, set `PUID` to 99 and `PGID` to 100.
+- Add the required volume mappings, if mapping to a disk or NFS share set the access mode to "RW/Slave".
+
+Template steps:
+
+- Add the template [URL](https://github.com/ptr727/DWSpectrum-LSIO/tree/develop/Unraid) to the Docker "Template Repositories" section and click "Save".
+- Create a new container by clicking the "Add Container" button
+
 ## Notes
 
 - Docker support is [experimental](https://bitbucket.org/networkoptix/nx_open_integrations/src/default/docker/), the NetworkOptix code does not behave well in docker environments.

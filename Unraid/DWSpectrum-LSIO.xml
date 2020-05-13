@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <Container version="2">
   <Beta>True</Beta>
-  <Name>DW Spectrum IPVMS</Name>
+  <Name>DW Spectrum LSIO</Name>
   <Overview>DW Spectrum IPVMS Docker based on LinuxServer</Overview>
   <Description>DW Spectrum IPVMS Docker based on LinuxServer</Description>
   <Category>HomeAutomation: Security: Status:Beta</Category>
@@ -11,18 +11,15 @@
   <GitHub>https://github.com/ptr727/DWSpectrum-LSIO</GitHub>
   <Support>https://github.com/ptr727/DWSpectrum-LSIO</Support>
   <Project>https://github.com/ptr727/DWSpectrum-LSIO</Project>
-  <Network>br1</Network>
-  <Privileged>false</Privileged>
   <WebUI>http://[IP]:[PORT:7001]</WebUI>
-  <TemplateURL/>
+  <TemplateURL>https://github.com/ptr727/DWSpectrum-LSIO/Unraid</TemplateURL>
   <Icon>https://github.com/ptr727/DWSpectrum-LSIO/raw/master/Unraid/DWLogo.png</Icon>
   <Networking>
     <Mode>bridge</Mode>
-    <Publish/>
   </Networking>
   <Data>
     <Volume>
-      <HostDir>/mnt/user/appdata/</HostDir>
+      <HostDir>/mnt/user/appdata/dwspectrum-lsio</HostDir>
       <ContainerDir>/config</ContainerDir>
       <Mode>rw</Mode>
     </Volume>

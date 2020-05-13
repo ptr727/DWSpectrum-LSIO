@@ -68,6 +68,13 @@ services:
       - 7001:7001
 ```
 
+### Unraid Docker Template
+
+- Add the template URL `https://github.com/ptr727/DWSpectrum-LSIO/tree/master/Unraid` to the Docker "Template Repositories" section and click "Save".
+- Create a new container by clicking the "Add Container" button, select "DWSpectrum-LSIO" from the Template dropdown.
+- Set the required volume mappings, if mapping to a disk or NFS share, set the access mode to "RW/Slave".
+- Set the network mode to bridge and enter the desired server static IP address.
+
 ## Notes
 
 - Docker support is [experimental](https://bitbucket.org/networkoptix/nx_open_integrations/src/default/docker/), the NetworkOptix code does not behave well in docker environments.

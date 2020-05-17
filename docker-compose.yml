@@ -4,19 +4,14 @@ services:
   dwspectrum:
     image: dwspectrum-lsio
     container_name: dwspectrum-lsio-test-container
-    hostname: dwspectrum-lsio-test-host
-    domainname: foo.bar
     environment:
-#      - PUID=1000
-#      - PGID=1000
       - TZ=Americas/Los_Angeles
     build: .
     volumes:
       - ./.mount/config:/config
       - ./.mount/media:/media
       - ./.mount/archive:/archive
-    #restart: unless-stopped
+    restart: unless-stopped
     network_mode: bridge
-    #mac_address: b7-48-d5-a6-d1-99
     ports:
       - 7001:7001

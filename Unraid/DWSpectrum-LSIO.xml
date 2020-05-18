@@ -1,22 +1,19 @@
 <?xml version="1.0"?>
 <Container version="2">
   <Beta>True</Beta>
-  <Name>DW Spectrum LSIO</Name>
-  <Overview>DW Spectrum IPVMS Docker based on LinuxServer</Overview>
-  <Description>DW Spectrum IPVMS Docker based on LinuxServer</Description>
-  <Category>HomeAutomation: Security: Status:Beta</Category>
-  <License>MIT</License>
+  <Name>DWSpectrumLSIO</Name>
   <Repository>ptr727/dwspectrum-lsio</Repository>
   <Registry>https://hub.docker.com/r/ptr727/dwspectrum-lsio/</Registry>
   <GitHub>https://github.com/ptr727/DWSpectrum-LSIO</GitHub>
-  <Support>https://github.com/ptr727/DWSpectrum-LSIO</Support>
+  <License>MIT</License>
   <Project>https://github.com/ptr727/DWSpectrum-LSIO</Project>
+  <Description>DW Spectrum IPVMS Docker based on LinuxServer</Description>
+  <Overview>DW Spectrum IPVMS Docker based on LinuxServer</Overview>
+  <Category>HomeAutomation: Security: Status:Beta</Category>
   <WebUI>http://[IP]:[PORT:7001]</WebUI>
   <TemplateURL>https://github.com/ptr727/DWSpectrum-LSIO/Unraid</TemplateURL>
   <Icon>https://github.com/ptr727/DWSpectrum-LSIO/raw/master/Unraid/DWLogo.png</Icon>
-  <Networking>
-    <Mode>bridge</Mode>
-  </Networking>
+  <ExtraParams>--mac-address=31:65:88:bf:cf:64</ExtraParams>
   <Data>
     <Volume>
       <HostDir>/mnt/user/appdata/dwspectrum-lsio</HostDir>
@@ -51,5 +48,5 @@
   <Config Name="Group Id" Target="PGID" Default="" Mode="" Description="Container Variable: PGID" Type="Variable" Display="always" Required="false" Mask="false">100</Config>
   <Config Name="Configuration Path" Target="/config" Default="" Mode="rw" Description="Container Path: /config" Type="Path" Display="always" Required="false" Mask="false">/mnt/user/appdata/dwspectrum-lsio</Config>
   <Config Name="Media Recording Path" Target="/media" Default="" Mode="rw,slave" Description="Container Path: /media" Type="Path" Display="always" Required="false" Mask="false">/mnt/disks/</Config>
-  <Config Name="Media Backup Archive Path" Target="/archive" Default="" Mode="rw" Description="Container Path: /archive" Type="Path" Display="always" Required="false" Mask="false">/mnt/disks/</Config>
+  <Config Name="Media Backup Archive Path" Target="/archive" Default="" Mode="rw,slave" Description="Container Path: /archive" Type="Path" Display="always" Required="false" Mask="false">/mnt/disks/</Config>
 </Container>

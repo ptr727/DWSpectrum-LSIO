@@ -13,7 +13,7 @@ ARG DOWNLOAD_VERSION="4.0.0.30917"
 
 # Prevent EULA and confirmation prompts in installers
 ENV DEBIAN_FRONTEND=noninteractive \
-# NxWitness (networkoptix) or DWSpectrum (digitalwatchdog)
+# NxWitness (networkoptix) or DWSpectrum (digitalwatchdog) or NxMeta (networkoptix-metavms)
     COMPANY_NAME="digitalwatchdog"
 
 LABEL name="DWSpectrum-LSIO" \
@@ -29,62 +29,76 @@ RUN apt-get update \
         wget \
 # Install nano and mc for making navigating the container easier
         nano mc \
-# Install gdb for crash handling (it is used but not included in the deb dependencies)
-        gdb gdbserver \
-# Install binutils for patching cloud host (from nxwitness docker)
-        binutils \
-# Install lsb-release used as a part of install scripts inside the deb package (from nxwitness docker)
-        lsb-release \
-# Download the DEB installer file
-    && wget -nv -O ./vms_server.deb ${DOWNLOAD_URL} \
-#
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Download the DEB installer file, extract it, and make a copy
+RUN wget -nv -O ./vms_server_orig.deb ${DOWNLOAD_URL} \
+    && dpkg-deb -R ./vms_server_orig.deb ./vms_server_orig \
+    && cp -avr ./vms_server_orig ./vms_server_mod
+
 # DEB and LSIO modification logic is based on https://github.com/thehomerepot/nxwitness/blob/master/Dockerfile
 # Replace the LSIO abc usernames with the mediaserver names
 # https://github.com/linuxserver/docker-baseimage-alpine/blob/master/root/etc/cont-init.d/10-adduser
-    && usermod -l ${COMPANY_NAME} abc \
+RUN usermod -l ${COMPANY_NAME} abc \
     && groupmod -n ${COMPANY_NAME} abc \
-    && sed -i "s/abc/\${COMPANY_NAME}/g" /etc/cont-init.d/10-adduser \
-# Extract the DEB file so we can modify it before installing
-    && dpkg-deb -R ./vms_server.deb ./vms_server \
+    && sed -i "s/abc/\${COMPANY_NAME}/g" /etc/cont-init.d/10-adduser
+
+# Remove systemd startup support
 # Remove the systemd depency from the dependencies list
 # Before: psmisc, systemd (>= 229), cifs-utils
 # After: psmisc, cifs-utils
 # sed -i 's/systemd.*), //' ./extracted/DEBIAN/control && \
-    && sed -i 's/systemd.*), //' ./vms_server/DEBIAN/control \
+RUN sed -i 's/systemd.*), //' ./vms_server_mod/DEBIAN/control \
 # Remove all instructions detailing crash reporting (all text after the "Dirty hack to prevent" line is removed from file)
 # sed -i '/# Dirty hack to prevent/q' ./extracted/DEBIAN/postinst && \
-    && sed -i '/# Dirty hack to prevent/q' ./vms_server/DEBIAN/postinst \
+    && sed -i '/# Dirty hack to prevent/q' ./vms_server_mod/DEBIAN/postinst \
 # Remove the result of systemctl
 # Before: systemctl stop $COMPANY_NAME-mediaserver || true
 # Before: systemctl stop $COMPANY_NAME-root-tool || true
 # After: systemctl stop $COMPANY_NAME-mediaserver 2>/dev/null || true
 # After: systemctl stop $COMPANY_NAME-root-tool 2>/dev/null || true
 # sed -i "/systemctl.*stop/s/ ||/ 2>\/dev\/null ||/g" ./extracted/DEBIAN/postinst && \
-    && sed -i "/systemctl.*stop/s/ ||/ 2>\/dev\/null ||/g" ./vms_server/DEBIAN/postinst \
+    && sed -i "/systemctl.*stop/s/ ||/ 2>\/dev\/null ||/g" ./vms_server_mod/DEBIAN/postinst \
 # Remove the runtime detection logic that uses systemd-detect-virt
 # Before: local -r runtime=$(systemd-detect-virt)
 # After: local -r runtime=$(echo "none")
 # sed -i 's/systemd-detect-virt/echo "none"/' ./extracted/DEBIAN/postinst && \
-    && sed -i 's/systemd-detect-virt/echo "none"/' ./vms_server/DEBIAN/postinst \    
+    && sed -i 's/systemd-detect-virt/echo "none"/' ./vms_server_mod/DEBIAN/postinst \    
 # Remove su and chuid from start logic
 # Before: su digitalwatchdog -c 'ulimit -c unlimited; ulimit -a'
 # Before: --chuid digitalwatchdog:digitalwatchdog \
 # After: Blank lines
 # sed -i '/^    su/d; /--chuid/d' ./extracted/opt/${COMPANY_NAME}/mediaserver/bin/mediaserver && \
-    && sed -i '/^    su/d; /--chuid/d' ./vms_server/opt/${COMPANY_NAME}/mediaserver/bin/mediaserver \
+    && sed -i '/^    su/d; /--chuid/d' ./vms_server_mod/opt/${COMPANY_NAME}/mediaserver/bin/mediaserver \
 # Remove all the etc/init and etc/systemd folders
-    && rm -rf ./vms_server/etc \
-#
+    && rm -rf ./vms_server_mod/etc \
 # Rebuild the DEB file from the modified directory
-    && dpkg-deb -b ./vms_server ./vms_server_mod.deb \
-# Install from the modified DEB file
+    && dpkg-deb -b ./vms_server_mod ./vms_server_mod.deb
+
+# Install the mediaserver
+# Some dependencies are required but not listed in the installer package
+RUN apt-get update \
+    && apt-get install --yes \
+# Install gdb for crash handling (it is used but not included in the deb dependencies)
+        gdb gdbserver \
+# Install binutils for patching cloud host (from nxwitness docker)
+        binutils \
+# Install lsb-release used as a part of install scripts inside the deb package (from nxwitness docker)
+        lsb-release \
+# Install the modified DEB file
     && apt-get install -y ./vms_server_mod.deb \
-# Cleanup    
-    && rm -rf ./vms_server \
-    && rm -rf ./vms_server.deb \
-    && rm -rf ./vms_server_mod.deb \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
+
+# Copy the original and modified installer files, comment out the cleanup section
+# cp -avr ./vms_server_orig ./config/vms_server_orig
+# cp -avr ./vms_server_mod ./config/vms_server_mod
+# Cleanup
+RUN rm -rf ./vms_server_mod \
+    && rm -rf ./vms_server_mod.deb \
+    && rm -rf ./vms_server_orig \
+    && rm -rf ./vms_server_orig.deb
 
 # Copy etc init and services files
 # The scripts are using the ${COMPANY_NAME} global environment variable

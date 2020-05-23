@@ -77,7 +77,7 @@ RUN sed -i 's/systemd.*), //' ./vms_server_mod/DEBIAN/control \
     && dpkg-deb -b ./vms_server_mod ./vms_server_mod.deb
 
 # Install the mediaserver
-# Some dependencies are required but not listed in the installer package
+# We can't use --no-install-recommends due to the installer package dependencies being incomplete
 RUN apt-get update \
     && apt-get install --yes \
 # Install gdb for crash handling (it is used but not included in the deb dependencies)

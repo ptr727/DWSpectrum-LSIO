@@ -28,6 +28,8 @@ Code at [GitHub](https://github.com/ptr727/DWSpectrum-LSIO)
 
 ### Docker Example
 
+A complex `macvlan` example specifying a custom MAC address.
+
 ```console
 docker network create --driver macvlan --subnet=192.168.1.0/24 --gateway=192.168.1.1 --opt parent=eth0 dwspectrum-macvlan
 
@@ -52,7 +54,8 @@ docker start dwspectrum-lsio-test-container
 
 ### Compose Example
 
-The YAML version must be set to "2.1" for `macvlan` networks, else you may encounter a `gateway is unexpected` error:
+A complex `macvlan` example specifying a custom MAC address.  
+The YAML version must be set to "2.1" for `macvlan` networks, else you may encounter a `gateway is unexpected` error.
 
 ```yaml
 version: "2.1"
@@ -63,6 +66,7 @@ services:
     container_name: dwspectrum-lsio-test-container
     hostname: dwspectrum-lsio-test-host
     domainname: foo.bar.net
+    restart: unless-stopped
     environment:
       - PUID=1000
       - PGID=1000
@@ -71,9 +75,6 @@ services:
       - /mnt/dwspectrum/config:/config
       - /mnt/dwspectrum/media:/media
       - /mnt/dwspectrum/archive:/archive
-    restart: unless-stopped
-    ports:
-      - 7001:7001
     mac_address: 07:58:8a:fc:30:e5
     networks:
       dwspectrum-macvlan:
@@ -91,7 +92,9 @@ networks:
           gateway: 192.168.1.1
 ```
 
-A simplified `bridge` mode configuration:
+A simplified `host` mode configuration.  
+In `host` network mode the mediaserver will use the host network for communication and license identifiers.  
+See the NXWitness Docker [Network](https://bitbucket.org/networkoptix/nx_open_integrations/src/default/docker/) documentation for details on the mediaserver behavior in various network modes.
 
 ```yaml
 version: "3.7"
@@ -100,15 +103,69 @@ services:
   dwspectrum:
     image: ptr727/dwspectrum-lsio
     container_name: dwspectrum-lsio-test-container
+    restart: unless-stopped
     environment:
       - TZ=Americas/Los_Angeles
     volumes:
       - /mnt/dwspectrum/config:/config
       - /mnt/dwspectrum/media:/media
+    network_mode: host
+```
+
+In `bridge` mode the port mappings must be specified.
+
+```yaml
+version: "3.7"
+
+services:
+  dwspectrum:
+    image: ptr727/dwspectrum-lsio
+    container_name: dwspectrum-lsio-test-container
     restart: unless-stopped
+    environment:
+      - TZ=Americas/Los_Angeles
+    volumes:
+      - /mnt/dwspectrum/config:/config
+      - /mnt/dwspectrum/media:/media
     ports:
       - 7001:7001
     network_mode: bridge
+```
+
+Volume aliases can be used to simplify deployment when volumes are pre-created or dynamic.
+
+```yaml
+version: "3.7"
+
+services:
+  dwspectrum:
+    image: ptr727/dwspectrum-lsio
+    container_name: dwspectrum-lsio-test-container
+    restart: unless-stopped
+    environment:
+      - TZ=Americas/Los_Angeles
+    volumes:
+      - dwspectrum_config:/config
+      - dwspectrum_media:/media
+      - dwspectrum_archive:/archive
+    network_mode: host
+
+volumes:
+  dwspectrum_config:
+    driver_opts:
+      type: none
+      device: /mnt/dwspectrum/config
+      o: bind
+  dwspectrum_media:
+    driver_opts:
+      type: none
+      device: /mnt/dwspectrum/media
+      o: bind
+  dwspectrum_archive:
+    driver_opts:
+      type: none
+      device: /mnt/dwspectrum/archive
+      o: bind
 ```
 
 ### Unraid Docker Template
@@ -132,13 +189,13 @@ services:
 
 - The mediaserver [filters](https://support.networkoptix.com/hc/en-us/requests/19037) mapped storage volumes by filesystem type, and does not allow the admin to specify desired storage locations. E.g neither BTRFS nor ZFS are "supported" filesystems.
   - Look for warning messages in the logs, e.g. `QnStorageManager(0x7f863c054bd0): No storage available for recording`.
-  - Because of filesystem type filtering, no mapped media storage is detected on [Unraid](https://unraid.net), and workarounds are required, see the Unraid section above.
-  - As with Unraid, [Docker Desktop for Windows](https://www.docker.com/products/docker-desktop) strorage volumes are not detected, I have not yet found a workaround.
+  - Because of filesystem type filtering, no mapped media storage is detected on [Unraid](https://unraid.net), [Docker Desktop for Windows](https://www.docker.com/products/docker-desktop), or [ZFS](https://zfsonlinux.org/) storage volumes.
   - Per NetworkOptix support, only the following filesystems are currently supported: `vfat, ecryptfs, fuseblk, fuse, fusectl, xfs, ext3, ext2, ext4, exfat, rootfs, nfs, nfs4, nfsd, cifs, fuse.osxfs`.
-  - Output from `cat /proc/mounts` for a few filesystems I tested, note that neither `fuse.grpcfuse` nor `fuse.shfs` is in the supported list:
+  - Output from `cat /proc/mounts` for a few filesystems I tested:
     - Unraid : `shfs /media fuse.shfs rw,nosuid,nodev,noatime,user_id=0,group_id=0,allow_other 0 0`
     - Docker Desktop for Windows : `grpcfuse /media fuse.grpcfuse rw,nosuid,nodev,relatime,user_id=0,group_id=0,allow_other,max_read=1048576 0 0`
-    - Docker on Ubuntu Server : `/dev/vda2 /media ext4 rw,relatime,data=ordered 0 0`
+    - Docker on Ubuntu Server EXT4 : `/dev/vda2 /media ext4 rw,relatime,data=ordered 0 0`
+    - Docker on Proxmox ZFS : `ssdpool/dwspectrum/media /media zfs rw,noatime,xattr,posixacl 0 0`
 - In Ubuntu Server, with a [non-root user](https://docs.docker.com/install/linux/linux-postinstall/), we get a runtime failure: `start-stop-daemon: unable to start /opt/digitalwatchdog/mediaserver/bin/mediaserver-bin (Invalid argument)`.
 - The calculation of `VMS_DIR=$(dirname $(dirname "${BASH_SOURCE[0]}"))` in `../bin/mediaserver` results in bad paths e.g. `start-stop-daemon: unable to stat ./bin/./bin/mediaserver-bin (No such file or directory)`.
 - The DEB installer does not reference all used dependencies. When trying to minimizing the size of the install by using `--no-install-recommends` we get a `OCI runtime create failed` error. We have to manually add the following required dependencies: `gdb gdbserver binutils lsb-release`.
@@ -149,4 +206,4 @@ services:
   - Use the cloud account for license enforcement, not the hardware that dynamically changes in docker environments.
   - Create broadly compatible `init` based images instead of less portable `systemd` based images.
   - Allow the administrator to use any path or volume for storage.
-  - [Create](https://support.networkoptix.com/hc/en-us/community/posts/360044221713-Backup-retention-policy) a more useful recording archive management system allowing for separate high speed low capacity media recording, and slower high capacity media playback storage volumes.
+  - [Create](https://support.networkoptix.com/hc/en-us/community/posts/360044221713-Backup-retention-policy) a more useful recording archive management system allowing for separate high speed media recording, and high capacity archive playback storage volumes.

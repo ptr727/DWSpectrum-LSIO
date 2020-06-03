@@ -16,10 +16,10 @@ ENV DEBIAN_FRONTEND=noninteractive \
 # NxWitness (networkoptix) or DWSpectrum (digitalwatchdog) or NxMeta (networkoptix-metavms)
     COMPANY_NAME="digitalwatchdog"
 
-LABEL name="DWSpectrum" \
+LABEL name="DWSpectrum-LSIO" \
     version=${DOWNLOAD_VERSION} \
     download=${DOWNLOAD_URL} \
-    description="DW Spectrum IPVMS Docker" \
+    description="DW Spectrum IPVMS Docker based on LinuxServer" \
     maintainer="Pieter Viljoen <ptr727@users.noreply.github.com>"
 
 # Install tools

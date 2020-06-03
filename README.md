@@ -67,7 +67,7 @@ Note, I can use smaller base images like [alpine](https://hub.docker.com/_/alpin
 Note, the current Nx Witness backup implementation is [not very useful](https://support.networkoptix.com/hc/en-us/community/posts/360044221713-Backup-retention-policy), as it only makes a copy of the recordings, it does not extend the retention period.
 
 Note, the mediaserver filters [filesystems](https://github.com/networkoptix/nx_open_integrations/tree/master/docker#notes-about-storage) by type, and the `/media` mapping must point to a supported filesytem. The upcoming version 4.1 [will support](https://support.networkoptix.com/hc/en-us/community/posts/360044241693-NxMeta-4-1-Beta-on-Docker) user defined filesystems. Unraid's FUSE filesystem is not supported, and requires the mapping of a physical device using the [Unassigned Devices](https://forums.unraid.net/topic/44104-unassigned-devices-managing-disk-drives-and-remote-shares-outside-of-the-unraid-array/) plugin.  
-Unfortunately, or unfathomably, admin defined storage is not supported, and the mediaserver insists in getting in the way.
+Unfortunately, or unfathomably, admin defined storage is not supported, and the mediaserver insists on getting in the way.
 
 ### Ports
 
@@ -123,13 +123,13 @@ services:
 ### Unraid Template
 
 - Add the template [URL](./Unraid) `https://github.com/ptr727/DWSpectrum-LSIO/tree/master/Unraid` to the "Template Repositories" section, at the bottom of the "Docker" configuration tab, and click "Save".
-- Use the [Unassigned Devices](https://forums.unraid.net/topic/44104-unassigned-devices-managing-disk-drives-and-remote-shares-outside-of-the-unraid-array/) plugin and mount a SSD drive formatted as XFS. This is currently workaround for the mediaserver filesystem filtering.
+- Use the [Unassigned Devices](https://forums.unraid.net/topic/44104-unassigned-devices-managing-disk-drives-and-remote-shares-outside-of-the-unraid-array/) plugin and mount a SSD drive formatted as XFS. This is currently a required workaround for the mediaserver filesystem filtering.
 - Create a new container by clicking the "Add Container" button, select "DWSpectrum-LSIO" from the Template dropdown.
 - Map the Unassigned Device SSD drive to the `/media` volume, using `RW/Slave` access mode.
 
 ## Notes
 
-The following applies to the current (as of writing) version 4.0.0.30917:
+The following applies to the [current](http://beta.networkoptix.com/beta-builds/default/#patches_list) (as of writing) version 4.0.0.30917:
 
 - The mediaserver filters mapped storage volumes by filesystem type, and does not allow the admin to specify desired storage locations.
   - Look for warning messages in the logs, e.g. `QnStorageManager(0x7f863c054bd0): No storage available for recording`.
@@ -150,6 +150,5 @@ Network Optix wishlist for better [docker support](https://support.networkoptix.
 
 - Publish always up to date and ready to use docker images on Docker Hub.
 - Use the cloud account for license enforcement, not the hardware that dynamically changes in docker environments.
-- Create broadly compatible `init` based images instead of less portable `systemd` based images.
 - Allow the administrator to specify and use any storage location, stop making incorrect automated storage decisions.
 - Implement a [more useful](https://support.networkoptix.com/hc/en-us/community/posts/360044221713-Backup-retention-policy) recording archive management system, allowing for separate high speed recording, and high capacity playback storage volumes.

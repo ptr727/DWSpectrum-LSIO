@@ -1,3 +1,7 @@
 #!/usr/bin/with-contenv bash
 
-exec s6-setuidgid ${COMPANY_NAME} /bin/bash -c '/opt/${COMPANY_NAME}/mediaserver/bin/mediaserver'
+# Run as ${COMPANY_NAME} user
+exec s6-setuidgid ${COMPANY_NAME} /bin/bash -c '/opt/${COMPANY_NAME}/mediaserver/bin/mediaserver -e'
+
+# Run as root user
+# exec /opt/${COMPANY_NAME}/mediaserver/bin/mediaserver -e

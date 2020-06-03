@@ -1,3 +1,0 @@
-#!/usr/bin/with-contenv bash
-
-exec /opt/${COMPANY_NAME}/mediaserver/bin/root-tool-bin

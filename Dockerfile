@@ -1,4 +1,4 @@
-# Use LSIO Ubuntu Bionic version
+# Use LSIO Ubuntu Bionic
 FROM lsiobase/ubuntu:bionic
 
 # Released versions are listed here:
@@ -16,89 +16,53 @@ ENV DEBIAN_FRONTEND=noninteractive \
 # NxWitness (networkoptix) or DWSpectrum (digitalwatchdog) or NxMeta (networkoptix-metavms)
     COMPANY_NAME="digitalwatchdog"
 
-LABEL name="DWSpectrum-LSIO" \
+LABEL name="DWSpectrum" \
     version=${DOWNLOAD_VERSION} \
     download=${DOWNLOAD_URL} \
-    description="DW Spectrum IPVMS Docker based on LinuxServer" \
+    description="DW Spectrum IPVMS Docker" \
     maintainer="Pieter Viljoen <ptr727@users.noreply.github.com>"
 
-# Install dependencies
+# Install tools
 RUN apt-get update \
-    && apt-get install --yes \
-# Install wget so we can download the installer
+    && apt-get install --no-install-recommends --yes \
+        mc \
+        nano \
+        strace \
         wget \
-# Install nano and mc for making navigating the container easier
-        nano mc \
     && apt-get clean \
+    && apt-get autoremove --purge \
     && rm -rf /var/lib/apt/lists/*
 
-# Download the DEB installer file, extract it, and make a copy
-RUN wget -nv -O ./vms_server_orig.deb ${DOWNLOAD_URL} \
-    && dpkg-deb -R ./vms_server_orig.deb ./vms_server_orig \
-    && cp -avr ./vms_server_orig ./vms_server_mod
+# Download the DEB installer file
+RUN wget -nv -O ./vms_server.deb ${DOWNLOAD_URL}
 
-# DEB and LSIO modification logic is based on https://github.com/thehomerepot/nxwitness/blob/master/Dockerfile
 # Replace the LSIO abc usernames with the mediaserver names
+# The mediaserver calls "chown ${COMPANY_NAME}" at runtime
+# We have to match the ${COMPANY_NAME} username with the LSIO "abc" usernames
 # https://github.com/linuxserver/docker-baseimage-alpine/blob/master/root/etc/cont-init.d/10-adduser
+# Change user "abc" to ${COMPANY_NAME}
 RUN usermod -l ${COMPANY_NAME} abc \
+# Change group "abc" to ${COMPANY_NAME}
     && groupmod -n ${COMPANY_NAME} abc \
+# Replace "abc" with ${COMPANY_NAME}
     && sed -i "s/abc/\${COMPANY_NAME}/g" /etc/cont-init.d/10-adduser
 
-# Remove systemd startup support
-# Remove the systemd depency from the dependencies list
-# Before: psmisc, systemd (>= 229), cifs-utils
-# After: psmisc, cifs-utils
-# sed -i 's/systemd.*), //' ./extracted/DEBIAN/control && \
-RUN sed -i 's/systemd.*), //' ./vms_server_mod/DEBIAN/control \
-# Remove all instructions detailing crash reporting (all text after the "Dirty hack to prevent" line is removed from file)
-# sed -i '/# Dirty hack to prevent/q' ./extracted/DEBIAN/postinst && \
-    && sed -i '/# Dirty hack to prevent/q' ./vms_server_mod/DEBIAN/postinst \
-# Remove the result of systemctl
-# Before: systemctl stop $COMPANY_NAME-mediaserver || true
-# Before: systemctl stop $COMPANY_NAME-root-tool || true
-# After: systemctl stop $COMPANY_NAME-mediaserver 2>/dev/null || true
-# After: systemctl stop $COMPANY_NAME-root-tool 2>/dev/null || true
-# sed -i "/systemctl.*stop/s/ ||/ 2>\/dev\/null ||/g" ./extracted/DEBIAN/postinst && \
-    && sed -i "/systemctl.*stop/s/ ||/ 2>\/dev\/null ||/g" ./vms_server_mod/DEBIAN/postinst \
-# Remove the runtime detection logic that uses systemd-detect-virt
-# Before: local -r runtime=$(systemd-detect-virt)
-# After: local -r runtime=$(echo "none")
-# sed -i 's/systemd-detect-virt/echo "none"/' ./extracted/DEBIAN/postinst && \
-    && sed -i 's/systemd-detect-virt/echo "none"/' ./vms_server_mod/DEBIAN/postinst \    
-# Remove su and chuid from start logic
-# Before: su digitalwatchdog -c 'ulimit -c unlimited; ulimit -a'
-# Before: --chuid digitalwatchdog:digitalwatchdog \
-# After: Blank lines
-# sed -i '/^    su/d; /--chuid/d' ./extracted/opt/${COMPANY_NAME}/mediaserver/bin/mediaserver && \
-    && sed -i '/^    su/d; /--chuid/d' ./vms_server_mod/opt/${COMPANY_NAME}/mediaserver/bin/mediaserver \
-# Remove all the etc/init and etc/systemd folders
-    && rm -rf ./vms_server_mod/etc \
-# Rebuild the DEB file from the modified directory
-    && dpkg-deb -b ./vms_server_mod ./vms_server_mod.deb
-
 # Install the mediaserver
-# We can't use --no-install-recommends due to the installer package dependencies being incomplete
+# Add missing dependencies (gdb)
+# Remove the root tool to prevent it from being used in service mode
 RUN apt-get update \
-    && apt-get install --yes \
-# Install gdb for crash handling (it is used but not included in the deb dependencies)
-        gdb gdbserver \
-# Install binutils for patching cloud host (from nxwitness docker)
-        binutils \
-# Install lsb-release used as a part of install scripts inside the deb package (from nxwitness docker)
-        lsb-release \
-# Install the modified DEB file
-    && apt-get install -y ./vms_server_mod.deb \
+    && apt-get install --no-install-recommends --yes \
+        gdb \
+        ./vms_server.deb \
     && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+    && apt-get autoremove --purge \
+    && rm -rf /opt/${COMPANY_NAME}/mediaserver/bin/root-tool-bin \
+    && rm -rf /var/lib/apt/lists/* \
+    && rm -rf ./vms_server.deb
 
-# Copy the original and modified installer files, comment out the cleanup section
-# cp -avr ./vms_server_orig ./config/vms_server_orig
-# cp -avr ./vms_server_mod ./config/vms_server_mod
-# Cleanup
-RUN rm -rf ./vms_server_mod \
-    && rm -rf ./vms_server_mod.deb \
-    && rm -rf ./vms_server_orig \
-    && rm -rf ./vms_server_orig.deb
+# Set ownership permissions
+RUN chown --verbose ${COMPANY_NAME}:${COMPANY_NAME} /opt/${COMPANY_NAME}/mediaserver/bin \
+    && chown --verbose ${COMPANY_NAME}:${COMPANY_NAME} /opt/${COMPANY_NAME}/mediaserver/bin/external.dat
 
 # Copy etc init and services files
 # The scripts are using the ${COMPANY_NAME} global environment variable

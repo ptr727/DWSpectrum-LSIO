@@ -13,7 +13,6 @@
   <WebUI>http://[IP]:[PORT:7001]</WebUI>
   <TemplateURL>https://github.com/ptr727/DWSpectrum-LSIO/Unraid</TemplateURL>
   <Icon>https://github.com/ptr727/DWSpectrum-LSIO/raw/master/Unraid/DWLogo.png</Icon>
-  <ExtraParams>--mac-address=31:65:88:bf:cf:64</ExtraParams>
   <Data>
     <Volume>
       <HostDir>/mnt/user/appdata/dwspectrum-lsio</HostDir>

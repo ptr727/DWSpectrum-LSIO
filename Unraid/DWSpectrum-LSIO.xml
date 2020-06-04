@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <Container version="2">
   <Beta>True</Beta>
-  <Name>DWSpectrumLSIO</Name>
+  <Name>dwSpectrum-lsio</Name>
   <Repository>ptr727/dwspectrum-lsio</Repository>
   <Registry>https://hub.docker.com/r/ptr727/dwspectrum-lsio/</Registry>
   <GitHub>https://github.com/ptr727/DWSpectrum-LSIO</GitHub>

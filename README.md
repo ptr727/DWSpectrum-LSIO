@@ -23,8 +23,8 @@ The biggest outstanding Docker challenges are hardware bound licensing, and lack
 
 ### Products
 
-- [Nx Meta IPVMS](https://meta.nxvms.com/) is the developer preview version of [Nx Witness](https://www.networkoptix.com/nx-witness/). I use Nx Meta to test upcoming product features or changes.
-- [DW Spectrum IPVMS](https://digital-watchdog.com/productdetail/DW-Spectrum-IPVMS/) is the US OEM version of [Network Optix Nx Witness VMS](https://www.networkoptix.com/nx-witness/). I am based in the US, and I have to use the [Digital Watchdog](https://digital-watchdog.com/) licensed version in production.
+- [Nx Meta](https://meta.nxvms.com/) is the developer preview version of [Nx Witness](https://www.networkoptix.com/nx-witness/). I use Nx Meta to test upcoming product features or changes.
+- [DW Spectrum](https://digital-watchdog.com/productdetail/DW-Spectrum-IPVMS/) is the US OEM version of [Nx Witness](https://www.networkoptix.com/nx-witness/). I am based in the US, and I have to use the [Digital Watchdog](https://digital-watchdog.com/) licensed version in production.
 
 Note, for a Nx Witness container, see [The Home Repot](https://github.com/thehomerepot/nxwitness) project.
 
